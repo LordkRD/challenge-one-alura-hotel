@@ -79,7 +79,6 @@ public class Busqueda extends JFrame {
 		lblNewLabel_4.setBounds(331, 62, 300, 42);
 		contentPane.add(lblNewLabel_4);
 
-		
 		panel.setBackground(new Color(12, 138, 199));
 		panel.setFont(new Font("Roboto", Font.PLAIN, 16));
 		panel.setBounds(20, 169, 865, 328);
@@ -297,33 +296,40 @@ public class Busqueda extends JFrame {
 
 	private void buscarPorIdYapellido() {
 
-		if (id()) {
-			limpiarTbReservas();
-			Reservas idAbuscar = new Reservas();
-			idAbuscar.setId(Integer.valueOf(txtBuscar.getText()));
-			var reservaAbuscar = new ReservasController().buscarReserva(idAbuscar);
+		if (txtBuscar.getText().isEmpty()) {
 
-			if (reservaAbuscar.isEmpty()) {
-				JOptionPane.showMessageDialog(this, "La reseva no exite");
-			} else {
-				reservaAbuscar
-						.forEach(reserva -> modelo.addRow(new Object[] { reserva.getId(), reserva.getFechaEntrada(),
-								reserva.getFechaSalida(), reserva.getValor(), reserva.getFormaPago() }));
-			}
+			JOptionPane.showMessageDialog(this, "Coloca el Numero de reserva");
 
 		} else {
-			limpiarTbHuesped();
-			Huespedes apHuespedes = new Huespedes();
-			apHuespedes.setApellido(txtBuscar.getText());
-			var huespedeAbuscar = new HuespedController().buscarApellido(apHuespedes);
 
-			if (huespedeAbuscar.isEmpty()) {
-				JOptionPane.showMessageDialog(this, "No se puedo encontrar ningun registro");
+			if (id()) {
+				limpiarTbReservas();
+				Reservas idAbuscar = new Reservas();
+				idAbuscar.setId(Integer.valueOf(txtBuscar.getText()));
+				var reservaAbuscar = new ReservasController().buscarReserva(idAbuscar);
+
+				if (reservaAbuscar.isEmpty()) {
+					JOptionPane.showMessageDialog(this, "La reseva no exite");
+				} else {
+					reservaAbuscar
+							.forEach(reserva -> modelo.addRow(new Object[] { reserva.getId(), reserva.getFechaEntrada(),
+									reserva.getFechaSalida(), reserva.getValor(), reserva.getFormaPago() }));
+				}
+
 			} else {
-				huespedeAbuscar.forEach(huesped -> modeloHuesped.addRow(new Object[] { huesped.getId(),
-						huesped.getNombre(), huesped.getApellido(), huesped.getFechaNacimiento(),
-						huesped.getNacionalidad(), huesped.getTelefono(), huesped.getIdReservas() }));
+				limpiarTbHuesped();
+				Huespedes apHuespedes = new Huespedes();
+				apHuespedes.setApellido(txtBuscar.getText());
+				var huespedeAbuscar = new HuespedController().buscarApellido(apHuespedes);
 
+				if (huespedeAbuscar.isEmpty()) {
+					JOptionPane.showMessageDialog(this, "No se puedo encontrar ningun registro");
+				} else {
+					huespedeAbuscar.forEach(huesped -> modeloHuesped.addRow(new Object[] { huesped.getId(),
+							huesped.getNombre(), huesped.getApellido(), huesped.getFechaNacimiento(),
+							huesped.getNacionalidad(), huesped.getTelefono(), huesped.getIdReservas() }));
+
+				}
 			}
 		}
 
@@ -365,29 +371,46 @@ public class Busqueda extends JFrame {
 
 	private void eliminar() {
 
-		Optional.ofNullable(modelo.getValueAt(tbReservas.getSelectedRow(), tbReservas.getSelectedColumn()))
-				.ifPresentOrElse(fila -> {
-					Integer id = Integer.valueOf(modelo.getValueAt(tbReservas.getSelectedRow(), 0).toString());
-					var filasAeliminar = new ReservasController().eliminarRegistro(id);
+		if (tbReservas.isRowSelected(tbReservas.getSelectedRow())) {
 
-					modelo.removeRow(tbReservas.getSelectedRow());
-					JOptionPane.showMessageDialog(this, String.format("%d item eliminado con éxito!", filasAeliminar));
-				}, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
-	}
-	
-	private boolean tieneFilaElegida() {
-		return tbReservas.getSelectedRowCount() == 0 || tbReservas.getSelectedColumnCount() == 0 ||
-				tbHuespedes.getSelectedRowCount() == 0 || tbHuespedes.getSelectedColumnCount() == 0;
+			Optional.ofNullable(modelo.getValueAt(tbReservas.getSelectedRow(), tbReservas.getSelectedColumn()))
+					.ifPresentOrElse(fila -> {
+						Integer id = Integer.valueOf(modelo.getValueAt(tbReservas.getSelectedRow(), 0).toString());
+						var filasAeliminar = new ReservasController().eliminarReserva(id);
 
-				
+						modelo.removeRow(tbReservas.getSelectedRow());
+						JOptionPane.showMessageDialog(this,
+								String.format("%d item eliminado con éxito!", filasAeliminar));
+					}, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
+
+		} else if (tbHuespedes.isRowSelected(tbHuespedes.getSelectedRow())) {
+
+			Optional.ofNullable(modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), tbHuespedes.getSelectedColumn()))
+					.ifPresentOrElse(fila -> {
+						Integer id = Integer
+								.valueOf(modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 0).toString());
+						var filasAeliminar = new HuespedController().eliminarHuesped(id);
+
+						modeloHuesped.removeRow(tbHuespedes.getSelectedRow());
+						JOptionPane.showMessageDialog(this,
+								String.format("%d item eliminado con éxito!", filasAeliminar));
+					}, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
+
+		} else {
+			
+			JOptionPane.showMessageDialog(this, "Por favor, elige el registro que deseas eliminar");
+			
+		}
+
 	}
+
 	private void editar() {
-		
-//		 if (tieneFilaElegida()) {
-//		        JOptionPane.showMessageDialog(this, "Por favor, elije un item");
-//		        return;
-//		    }
-		
+
+//		if (tieneFilaElegidaReseva()) {
+//			JOptionPane.showMessageDialog(this, "Por favor, elige el registro que editar");
+//			return;
+//		}
+
 		if (tbReservas.editCellAt(tbReservas.getSelectedRow(), tbReservas.getSelectedColumn(), null)) {
 
 			Optional.ofNullable(modelo.getValueAt(tbReservas.getSelectedRow(), tbReservas.getSelectedColumn()))
@@ -409,7 +432,9 @@ public class Busqueda extends JFrame {
 					}, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
 			limpiarTbReservas();
 			cargarReservas();
-		} else if(tbHuespedes.editCellAt(tbHuespedes.getSelectedRow(), tbHuespedes.getSelectedColumn(), null)){
+
+		} else if (tbHuespedes.editCellAt(tbHuespedes.getSelectedRow(), tbHuespedes.getSelectedColumn(), null)) {
+
 			Optional.ofNullable(modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), tbHuespedes.getSelectedColumn()))
 					.ifPresentOrElse(fila -> {
 						Integer id = Integer
@@ -435,34 +460,10 @@ public class Busqueda extends JFrame {
 					}, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
 			limpiarTbHuesped();
 			cargarHuerpedes();
+		} else {
+			JOptionPane.showMessageDialog(this, "Por favor, elige el registro que deseas editar");
 		}
-		
-		
-	}
 
-	private void editarHuesped() {
-
-		Optional.ofNullable(modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), tbHuespedes.getSelectedColumn()))
-				.ifPresentOrElse(fila -> {
-					Integer id = Integer.valueOf(modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 0).toString());
-					String nombre = (String) modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 1);
-					String apellido = (String) modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 2);
-					String FechaNacimiento = (String) modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 3);
-					String nacionalidad = (String) modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 4);
-					String telefono = (String) modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 5);
-					Integer idReserva = Integer
-							.valueOf(modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 6).toString());
-
-					if (modeloHuesped.isCellEditable(tbHuespedes.getSelectedRow(), tbHuespedes.getSelectedColumn())) {
-
-						var filasModificadas = new HuespedController().editarHuesped(id, nombre, apellido,
-								FechaNacimiento, nacionalidad, telefono, idReserva);
-
-						JOptionPane.showMessageDialog(this,
-								String.format("%d item modificado con éxito!", filasModificadas));
-
-					}
-				}, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
 	}
 
 	private void cargarHuerpedes() {

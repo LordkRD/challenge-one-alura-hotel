@@ -15,41 +15,40 @@ import javax.swing.JTextField;
 import com.aluraholel.modelo.*;
 import com.alurahotel.factory.ConnectionFactory;
 import com.alurahotel.views.MenuUsuario;
+
 public class LoginDAO {
-	
+
 	final private Connection con;
-	
+
 	public LoginDAO(Connection con) {
 		this.con = con;
 	}
-	
-	public List<Usuarios> loginIn(String usuario,String pass) {		 
-		List<Usuarios> usuarios = new ArrayList<>();
+
+	public boolean loginIn(String usuario, String contrasena) {
 		
 		try {
-			PreparedStatement pstm = con.prepareStatement("SELECT USER_NAME, CONTRASEÑA FROM USUARIOS WHERE "
-					+ "USER_NAME = ? " 
-					+ "AND CONTRASEÑA = ?");
-			
-			pstm.setString(1, usuario);
-			pstm.setString(2, pass);
-			pstm.execute();
-			
-			ResultSet resultSet = pstm.getResultSet();
+			PreparedStatement pstm = con.prepareStatement(
+					"SELECT NOMBRE_USUARIO, CONTRASENA FROM USUARIOS WHERE " + "NOMBRE_USUARIO = ? " + "AND CONTRASENA = ?");
+			try (pstm) {
+				pstm.setString(1, usuario);
+				pstm.setString(2, contrasena);
+				pstm.execute();
 
-			if (resultSet.next()) {
-//				String user= resultSet.getString("USER_NAME");
-//				String contra = resultSet.getString("CONTRASEÑA");
+				ResultSet resultSet = pstm.getResultSet();
 				
-				var validacion = new Usuarios(resultSet.getString("USER_NAME"), resultSet.getString("CONTRASEÑA"));
-				
+				try (resultSet) {
+					
+					return resultSet.next();
+
+				}
 			}
+			
 		} catch (SQLException e) {
-			throw new RuntimeException(e);
+			 e.printStackTrace();
+			return false;
+			
 		}
-		return usuarios;
-		
+
 	}
-	
 
 }

@@ -26,7 +26,7 @@ public class ReservasDAO {
 		try {
 
 			final PreparedStatement pstm = con.prepareStatement(
-					"INSERT INTO RESERVAS " + "(FECHA_ENTRADA, FECHA_SALIDA, VALOR, FORMA_PAGO ) " + "VALUES (?,?,?,?)",
+					"INSERT INTO RESERVAS " + "(FECHAENTRADA, FECHASALIDA, VALOR, FORMAPAGO ) " + "VALUES (?,?,?,?)",
 					Statement.RETURN_GENERATED_KEYS);
 
 			ejecutaRegistro(reservas, pstm);
@@ -63,7 +63,7 @@ public class ReservasDAO {
 
 		try {
 			final PreparedStatement pstm = con
-					.prepareStatement("SELECT ID, FECHA_ENTRADA, FECHA_SALIDA, VALOR, FORMA_PAGO FROM RESERVAS ");
+					.prepareStatement("SELECT ID, FECHAENTRADA, FECHASALIDA, VALOR, FORMAPAGO FROM RESERVAS ");
 
 			try (pstm) {
 				pstm.execute();
@@ -71,9 +71,9 @@ public class ReservasDAO {
 				ResultSet resultSet = pstm.getResultSet();
 				try (resultSet) {
 					while (resultSet.next()) {
-						Reservas fila = new Reservas(resultSet.getInt("ID"), resultSet.getString("FECHA_ENTRADA"),
-								resultSet.getString("FECHA_SALIDA"), resultSet.getFloat("VALOR"),
-								resultSet.getString("FORMA_PAGO"));
+						Reservas fila = new Reservas(resultSet.getInt("ID"), resultSet.getString("FECHAENTRADA"),
+								resultSet.getString("FECHASALIDA"), resultSet.getFloat("VALOR"),
+								resultSet.getString("FORMAPAGO"));
 
 						listado.add(fila);
 					}
@@ -91,7 +91,7 @@ public class ReservasDAO {
 
 		try {
 			final PreparedStatement pstm = con.prepareStatement(
-					"SELECT ID, FECHA_ENTRADA, FECHA_SALIDA, VALOR, FORMA_PAGO FROM RESERVAS " + "WHERE ID = ?");
+					"SELECT ID, FECHAENTRADA, FECHASALIDA, VALOR, FORMAPAGO FROM RESERVAS " + "WHERE ID = ?");
 
 			try (pstm) {
 				pstm.setInt(1, id);
@@ -100,9 +100,9 @@ public class ReservasDAO {
 				ResultSet resultSet = pstm.getResultSet();
 				try (resultSet) {
 					if (resultSet.next()) {
-						Reservas fila = new Reservas(resultSet.getInt("ID"), resultSet.getString("FECHA_ENTRADA"),
-								resultSet.getString("FECHA_SALIDA"), resultSet.getFloat("VALOR"),
-								resultSet.getString("FORMA_PAGO"));
+						Reservas fila = new Reservas(resultSet.getInt("ID"), resultSet.getString("FECHAENTRADA"),
+								resultSet.getString("FECHASALIDA"), resultSet.getFloat("VALOR"),
+								resultSet.getString("FORMAPAGO"));
 
 						listado.add(fila);
 					}
@@ -115,7 +115,7 @@ public class ReservasDAO {
 
 	}
 
-	public int eliminarRegistro(Integer id) {
+	public int eliminarReserva(Integer id) {
 		try {
 			final PreparedStatement pstm = con.prepareStatement("DELETE FROM RESERVAS WHERE ID = ?");
 			try (pstm) {
@@ -134,8 +134,8 @@ public class ReservasDAO {
 	public int editarRegistro(String fechaEntrada, String fechaSalida, Float valor, String formaPago, Integer id) {
 
 		try {
-			final PreparedStatement pstm = con.prepareStatement("UPDATE RESERVAS SET " + "FECHA_ENTRADA = ?,"
-					+ "FECHA_SALIDA = ?," + "VALOR = ?," + "FORMA_PAGO = ?" + "WHERE ID = ?");
+			final PreparedStatement pstm = con.prepareStatement("UPDATE RESERVAS SET " + "FECHAENTRADA = ?,"
+					+ "FECHASALIDA = ?," + "VALOR = ?," + "FORMAPAGO = ?" + "WHERE ID = ?");
 
 			try (pstm) {
 				pstm.setString(1, fechaEntrada);

@@ -23,7 +23,7 @@ public class HuespedDAO {
 		try {
 
 			final PreparedStatement pstm = con.prepareStatement("INSERT INTO HUESPEDES "
-					+ "(NOMBRE, APELLIDO, FECHA_NACIMIENTO, NACIONALIDAD, TELEFONO, ID_RESERVA)"
+					+ "(NOMBRE, APELLIDO, FECHANACIMIENTO, NACIONALIDAD, TELEFONO, IDRESERVA)"
 					+ " VALUES (?,?,?,?,?,?)");
 			try (pstm) {
 				pstm.setString(1, huespedes.getNombre());
@@ -45,7 +45,7 @@ public class HuespedDAO {
 
 		try {
 			final PreparedStatement pstm = con.prepareStatement(
-					"SELECT ID, NOMBRE, APELLIDO, FECHA_NACIMIENTO, NACIONALIDAD, TELEFONO, ID_RESERVA FROM HUESPEDES");
+					"SELECT ID, NOMBRE, APELLIDO, FECHANACIMIENTO, NACIONALIDAD, TELEFONO, IDRESERVA FROM HUESPEDES");
 			try (pstm) {
 				pstm.execute();
 
@@ -55,9 +55,9 @@ public class HuespedDAO {
 					while (resultSet.next()) {
 
 						Huespedes fila = new Huespedes(resultSet.getInt("ID"), resultSet.getString("NOMBRE"),
-								resultSet.getString("APELLIDO"), resultSet.getString("FECHA_NACIMIENTO"),
+								resultSet.getString("APELLIDO"), resultSet.getString("FECHANACIMIENTO"),
 								resultSet.getString("NACIONALIDAD"), resultSet.getString("TELEFONO"),
-								resultSet.getInt("ID_RESERVA"));
+								resultSet.getInt("IDRESERVA"));
 
 						listado.add(fila);
 					}
@@ -75,8 +75,8 @@ public class HuespedDAO {
 
 		try {
 			PreparedStatement pstm = con
-					.prepareStatement("SELECT  ID, NOMBRE, APELLIDO, FECHA_NACIMIENTO, NACIONALIDAD, TELEFONO,"
-							+ " ID_RESERVA FROM HUESPEDES WHERE APELLIDO = ?");
+					.prepareStatement("SELECT  ID, NOMBRE, APELLIDO, FECHANACIMIENTO, NACIONALIDAD, TELEFONO,"
+							+ " IDRESERVA FROM HUESPEDES WHERE APELLIDO = ?");
 
 			try (pstm) {
 				pstm.setString(1, apellido);
@@ -86,9 +86,9 @@ public class HuespedDAO {
 				try (resultSet) {
 					while (resultSet.next()) {
 						Huespedes fila = new Huespedes(resultSet.getInt("ID"), resultSet.getString("NOMBRE"),
-								resultSet.getString("APELLIDO"), resultSet.getString("FECHA_NACIMIENTO"),
+								resultSet.getString("APELLIDO"), resultSet.getString("FECHANACIMIENTO"),
 								resultSet.getString("NACIONALIDAD"), resultSet.getString("TELEFONO"),
-								resultSet.getInt("ID_RESERVA"));
+								resultSet.getInt("IDRESERVA"));
 
 						listado.add(fila);
 
@@ -108,8 +108,8 @@ public class HuespedDAO {
 
 		try {
 			final PreparedStatement pstm = con.prepareStatement("UPDATE HUESPEDES SET "
-					+ "NOMBRE = ?, APELLIDO = ?, FECHA_NACIMIENTO = ?, NACIONALIDAD = ?,"
-					+ "TELEFONO =?, ID_RESERVA = ? WHERE ID = ?");
+					+ "NOMBRE = ?, APELLIDO = ?, FECHANACIMIENTO = ?, NACIONALIDAD = ?,"
+					+ "TELEFONO =?, IDRESERVA = ? WHERE ID = ?");
 
 			try (pstm) {
 				
@@ -130,6 +130,23 @@ public class HuespedDAO {
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public int eliminarHuesped(Integer id) {
+		try {
+			final PreparedStatement pstm = con.prepareStatement("DELETE FROM HUESPEDES WHERE ID = ?");
+			try (pstm) {
+				pstm.setInt(1, id);
+				pstm.execute();
+
+				int updateCount = pstm.getUpdateCount();
+
+				return updateCount;
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+
 	}
 
 }

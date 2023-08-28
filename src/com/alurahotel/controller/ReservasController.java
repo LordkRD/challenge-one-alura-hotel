@@ -28,9 +28,9 @@ public class ReservasController {
 		return resevasDAO.buscaReserva(reservaHuesped.getId());
 	}
 
-	public int eliminarRegistro(Integer id) {
+	public int eliminarReserva(Integer id) {
 
-		return resevasDAO.eliminarRegistro(id);
+		return resevasDAO.eliminarReserva(id);
 	}
 
 	public int editarRegistro(String fechaEntrada, String fechaSalida, Float valor, String formaPago, Integer id) {

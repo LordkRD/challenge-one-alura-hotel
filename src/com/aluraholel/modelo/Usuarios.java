@@ -10,6 +10,10 @@ public class Usuarios {
 		this.contraseña = contraseña;
 	}
 
+	public Usuarios() {
+		super();
+	}
+
 	public String getUsuario() {
 		return usuario;
 	}
@@ -20,12 +24,12 @@ public class Usuarios {
 
 	public void setUsuario(String usuario) {
 		this.usuario = usuario;
-		System.out.println(usuario);
+		
 	}
 
 	public void setContraseña(String contraseña) {
 		this.contraseña = contraseña;
-		System.out.println(contraseña);
+		
 	}
 	
 	

@@ -45,6 +45,11 @@ public class HuespedController {
 		
 		return huespedDAO.editarHuesped(id, nombre, apellido, fechaNacimiento, nacionalidad, telefono, idReserva);
 	}
+
+	public int eliminarHuesped(Integer id) {
+		
+		return huespedDAO.eliminarHuesped(id);
+	}
 	
 
 }

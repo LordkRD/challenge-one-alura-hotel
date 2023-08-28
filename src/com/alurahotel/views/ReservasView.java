@@ -1,6 +1,5 @@
 package com.alurahotel.views;
 
-import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -11,14 +10,15 @@ import javax.swing.ImageIcon;
 import java.awt.Color;
 import javax.swing.JTextField;
 
-import com.aluraholel.modelo.Huespedes;
 import com.aluraholel.modelo.Reservas;
+import com.aluraholel.modelo.Valor;
 import com.alurahotel.controller.ReservasController;
 import com.toedter.calendar.JDateChooser;
 import java.awt.Font;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -29,12 +29,11 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
-
 @SuppressWarnings("serial")
 public class ReservasView extends JFrame {
 
 	private JPanel contentPane;
-	public static JTextField txtValor;
+	public JTextField txtValor;
 	public static JDateChooser txtFechaEntrada;
 	public static JDateChooser txtFechaSalida;
 	public static JComboBox<String> txtFormaPago;
@@ -42,7 +41,8 @@ public class ReservasView extends JFrame {
 	private JLabel labelExit;
 	private JLabel labelAtras;
 	private ReservasController reservasController;
-	
+	String valorTotal;
+
 	/**
 	 * Create the frame.
 	 */
@@ -50,8 +50,7 @@ public class ReservasView extends JFrame {
 		super("Reserva");
 		this.reservasController = new ReservasController();
 		
-		setIconImage(
-				Toolkit.getDefaultToolkit().getImage(ReservasView.class.getResource("/imagenes/aH-40px.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(ReservasView.class.getResource("/imagenes/aH-40px.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 910, 560);
 		setResizable(false);
@@ -247,6 +246,7 @@ public class ReservasView extends JFrame {
 		txtFechaEntrada.setBorder(new LineBorder(SystemColor.window));
 		txtFechaEntrada.setDateFormatString("yyyy-MM-dd");
 		txtFechaEntrada.setFont(new Font("Roboto", Font.PLAIN, 18));
+		txtFechaEntrada.setDate(new Date());
 		panel.add(txtFechaEntrada);
 
 		txtFechaSalida = new JDateChooser();
@@ -257,26 +257,29 @@ public class ReservasView extends JFrame {
 		txtFechaSalida.getCalendarButton().setBounds(267, 1, 21, 31);
 		txtFechaSalida.setBackground(Color.WHITE);
 		txtFechaSalida.setFont(new Font("Roboto", Font.PLAIN, 18));
-		txtFechaSalida.addPropertyChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				// Activa el evento, después del usuario seleccionar las fechas se debe calcular
-				// el valor de la reserva
-			}
-		});
+		txtFechaSalida.setDate(new Date());
 		txtFechaSalida.setDateFormatString("yyyy-MM-dd");
 		txtFechaSalida.getCalendarButton().setBackground(SystemColor.textHighlight);
 		txtFechaSalida.setBorder(new LineBorder(new Color(255, 255, 255), 0));
+		txtFechaSalida.addPropertyChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+
+				calculaValor();
+
+			}
+		});
 		panel.add(txtFechaSalida);
 
 		txtValor = new JTextField();
+		txtValor.setEditable(false);
 		txtValor.setBackground(SystemColor.text);
 		txtValor.setHorizontalAlignment(SwingConstants.CENTER);
 		txtValor.setForeground(Color.BLACK);
 		txtValor.setBounds(78, 328, 231, 33);
 		txtValor.setFont(new Font("Roboto Black", Font.BOLD, 17));
 		txtValor.setBorder(javax.swing.BorderFactory.createEmptyBorder());
-		panel.add(txtValor);
 		txtValor.setColumns(10);
+		panel.add(txtValor);
 
 		txtFormaPago = new JComboBox();
 		txtFormaPago.setBounds(68, 417, 289, 38);
@@ -305,21 +308,41 @@ public class ReservasView extends JFrame {
 
 	}
 
+	public void calculaValor() {
+		int fechaIn = (txtFechaEntrada.getDate().getDay());
+		int fechaOut = (txtFechaSalida.getDate().getDay());
+		double precio = 5144.25;
+		
+		int cantidadDia = fechaOut - fechaIn ;
+		float valor = (float) (cantidadDia * precio);
+		valorTotal = String.valueOf(valor);
+		System.out.println(valorTotal);
+		if (cantidadDia != 0) {
+			
+			txtValor.setText(valorTotal);
+			
+		}else if(valorTotal.equals(null)) {
+			
+			txtValor.setText("5144.25");
+		}
+		
+	}
+
 	private void guardar() {
 
-		if (ReservasView.txtFechaEntrada.getDate() != null && ReservasView.txtFechaSalida.getDate() != null) {SimpleDateFormat formato = new SimpleDateFormat("yyyy/MM/dd");
-		String fechaEnt = formato.format(txtFechaEntrada.getDate());
-		String fechaSal = formato.format(txtFechaSalida.getDate());
-		
-		Float valorFlat;
-		valorFlat = Float.parseFloat(txtValor.getText());
-		String formaPago = (String) txtFormaPago.getSelectedItem();
+		if (ReservasView.txtFechaEntrada.getDate() != null && ReservasView.txtFechaSalida.getDate() != null) {
+			SimpleDateFormat formato = new SimpleDateFormat("yyyy/MM/dd");
+			String fechaEnt = formato.format(txtFechaEntrada.getDate());
+			String fechaSal = formato.format(txtFechaSalida.getDate());
 
-		var reserva = new Reservas(fechaEnt, fechaSal, valorFlat, formaPago);
-		
-		reservasController.guardar(reserva);
-			
-			
+			Float valorFlat;
+			valorFlat = Float.parseFloat(txtValor.getText());
+			String formaPago = (String) txtFormaPago.getSelectedItem();
+
+			var reserva = new Reservas(fechaEnt, fechaSal, valorFlat, formaPago);
+
+			reservasController.guardar(reserva);
+
 			RegistroHuesped registro = new RegistroHuesped();
 			registro.setVisible(true);
 			registro.txtNreserva.setText(String.valueOf(reservasController.getNreservas()));

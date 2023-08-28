@@ -20,9 +20,10 @@ public class LoginController {
 	public LoginController() {
 		this.loginDAO = new LoginDAO(new ConnectionFactory().recuperaConexion());
 	}
-	public List<Usuarios> login(String usuario, String pass) {
+	public boolean login(String usuario, String contrasena) {
 		
-		return loginDAO.loginIn(usuario,pass);
+		return loginDAO.loginIn(usuario, contrasena);
+		
 	}
 	
 	
