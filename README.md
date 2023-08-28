@@ -4,7 +4,7 @@
 sistema de recepcion de reserva
 
 <h2 align ="center">Tecnologia</h2>
-#--javaSE 10
+#--javaSE 10#
 #--JDBC
 #-MySQL
 
