@@ -4,12 +4,12 @@
 sistema de recepcion de reserva
 
 <h2 align ="center">Tecnologia</h2>
-javaSE 10
-JDBC
-MySQL
+#--javaSE 10
+#--JDBC
+#-MySQL
 
 con las libretias:
---c3p0-0.9.5.4.jar
---jcalendar.jar
---mysql-connetor-j-8.0.32.jar
+#--c3p0-0.9.5.4.jar
+#--jcalendar.jar
+#--mysql-connetor-j-8.0.32.jar
 
