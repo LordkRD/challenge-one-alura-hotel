@@ -4,9 +4,9 @@
 sistema de recepcion de reserva
 
 <h2 align ="center">Tecnologia</h2>
-#--javaSE 10#
-#--JDBC
-#-MySQL
+<p>--java</p>p
+--JDBC
+-MySQL
 
 con las libretias:
 #--c3p0-0.9.5.4.jar
